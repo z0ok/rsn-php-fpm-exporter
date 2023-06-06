@@ -1,0 +1,23 @@
+version: '3.2'
+services:
+  fpm-exporter-id:
+    image: alpine:3.18
+    ports:
+      - 9123:9123
+    volumes:
+      - ./php-fpm_exporter:/opt/exporter/php-fpm_exporter
+    working_dir: /opt/exporter
+    user: root
+    restart: unless-stopped
+    command:
+      - "/opt/exporter/php-fpm_exporter"
+      - "server"
+      - "--web.listen-address=0.0.0.0:9123"
+      - "--phpfpm.scrape-uri=tcp://FPM_SRC:9000/fpm_status"
+    networks:
+      - NETW_NAME
+      
+networks:
+  NETW_NAME:
+   external:
+     name: NETW_NAME
